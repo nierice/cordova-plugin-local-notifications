@@ -19,6 +19,8 @@
  * limitations under the License.
  */
 
+// codebeat:disable[TOO_MANY_FUNCTIONS]
+
 package de.appplant.cordova.plugin.notification;
 
 import android.content.Context;
@@ -64,6 +66,9 @@ public final class Options {
 
     // Default icon path
     private static final String DEFAULT_ICON = "res://icon";
+
+    // Default icon type
+    private static final String DEFAULT_ICON_TYPE = "square";
 
     // The original JSON object
     private final JSONObject options;
@@ -372,6 +377,13 @@ public final class Options {
     }
 
     /**
+     * Type of the large icon.
+     */
+    String getLargeIconType() {
+        return options.optString("iconType", DEFAULT_ICON_TYPE);
+    }
+
+    /**
      * Small icon resource ID for the local notification.
      */
     int getSmallIcon() {
@@ -380,10 +392,6 @@ public final class Options {
 
         if (resId == 0) {
             resId = assets.getResId(DEFAULT_ICON);
-        }
-
-        if (resId == 0) {
-            resId = context.getApplicationInfo().icon;
         }
 
         if (resId == 0) {
@@ -596,24 +604,26 @@ public final class Options {
      * Gets the list of actions to display.
      */
     Action[] getActions() {
-        String groupId    = options.optString("actionGroupId", null);
-        JSONArray actions = options.optJSONArray("actions");
+        Object value      = options.opt("actions");
+        String groupId    = null;
+        JSONArray actions = null;
         ActionGroup group = null;
 
-        if (actions != null && actions.length() > 0) {
-            group = ActionGroup.parse(context, options);
+        if (value instanceof String) {
+            groupId = (String) value;
+        } else
+        if (value instanceof JSONArray) {
+            actions = (JSONArray) value;
         }
 
-        if (group == null && groupId != null) {
+        if (groupId != null) {
             group = ActionGroup.lookup(groupId);
+        } else
+        if (actions != null && actions.length() > 0) {
+            group = ActionGroup.parse(context, actions);
         }
 
-        if (group != null) {
-            ActionGroup.register(group);
-            return group.getActions();
-        }
-
-        return null;
+        return (group != null) ? group.getActions() : null;
     }
 
     /**
@@ -675,3 +685,5 @@ public final class Options {
     }
 
 }
+
+// codebeat:enable[TOO_MANY_FUNCTIONS]

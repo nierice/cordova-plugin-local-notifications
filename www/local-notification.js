@@ -24,7 +24,6 @@ var exec    = require('cordova/exec'),
 
 // Defaults
 exports._defaults = {
-    actionGroupId : null,
     actions       : [],
     attachments   : [],
     autoClear     : true,
@@ -38,6 +37,7 @@ exports._defaults = {
     group         : null,
     groupSummary  : false,
     icon          : null,
+    iconType      : null,
     id            : 0,
     launch        : true,
     led           : true,
@@ -293,7 +293,7 @@ exports.getType = function (id, callback, scope) {
  * @return [ Void ]
  */
 exports.getIds = function (callback, scope) {
-    this._exec('ids', null, callback, scope);
+    this._exec('ids', 0, callback, scope);
 };
 
 /**
@@ -305,7 +305,7 @@ exports.getIds = function (callback, scope) {
  * @return [ Void ]
  */
 exports.getScheduledIds = function (callback, scope) {
-    this._exec('scheduledIds', null, callback, scope);
+    this._exec('ids', 1, callback, scope);
 };
 
 /**
@@ -317,7 +317,7 @@ exports.getScheduledIds = function (callback, scope) {
  * @return [ Void ]
  */
 exports.getTriggeredIds = function (callback, scope) {
-    this._exec('triggeredIds', null, callback, scope);
+    this._exec('ids', 2, callback, scope);
 };
 
 /**
@@ -348,7 +348,7 @@ exports.get = function () {
 
     ids = this._convertIds(ids);
 
-    this._exec('notifications', ids, callback, scope);
+    this._exec('notifications', [3, ids], callback, scope);
 };
 
 /**
@@ -360,7 +360,7 @@ exports.get = function () {
  * @return [ Void ]
  */
 exports.getAll = function (callback, scope) {
-    this._exec('notifications', null, callback, scope);
+    this._exec('notifications', 0, callback, scope);
 };
 
 /**
@@ -370,7 +370,7 @@ exports.getAll = function (callback, scope) {
  * @param [ Object ]     scope    The callback function's scope.
  */
 exports.getScheduled = function (callback, scope) {
-    this._exec('scheduledNotifications', null, callback, scope);
+    this._exec('notifications', 1, callback, scope);
 };
 
 /**
@@ -380,11 +380,11 @@ exports.getScheduled = function (callback, scope) {
  * @param [ Object ]     scope    The callback function's scope.
  */
 exports.getTriggered = function (callback, scope) {
-    this._exec('triggeredNotifications', null, callback, scope);
+    this._exec('notifications', 2, callback, scope);
 };
 
 /**
- * Register an group of actions by id.
+ * Add an group of actions by id.
  *
  * @param [ String ]   id       The Id of the group.
  * @param [ Array]     actions  The action config settings.
@@ -393,10 +393,34 @@ exports.getTriggered = function (callback, scope) {
  *
  * @return [ Void ]
  */
-exports.addActionGroup = function (id, actions, callback, scope) {
-    var config = { actionGroupId: id, actions: actions };
+exports.addActions = function (id, actions, callback, scope) {
+    this._exec('actions', [0, id, actions], callback, scope);
+};
 
-    this._exec('actions', config, callback, scope);
+/**
+ * Remove an group of actions by id.
+ *
+ * @param [ String ]   id       The Id of the group.
+ * @param [ Function ] callback The function to be exec as the callback.
+ * @param [ Object ]   scope    The callback function's scope.
+ *
+ * @return [ Void ]
+ */
+exports.removeActions = function (id, callback, scope) {
+    this._exec('actions', [1, id], callback, scope);
+};
+
+/**
+ * Check if a group of actions is defined.
+ *
+ * @param [ String ]   id       The Id of the group.
+ * @param [ Function ] callback The function to be exec as the callback.
+ * @param [ Object ]   scope    The callback function's scope.
+ *
+ * @return [ Void ]
+ */
+exports.hasActions = function (id, callback, scope) {
+    this._exec('actions', [2, id], callback, scope);
 };
 
 /**
@@ -595,12 +619,12 @@ exports._convertProperties = function (options) {
         console.warn('Property "smallIcon" must be of kind res://...');
     }
 
-    if (typeof options.timeout === 'boolean') {
-        options.timeout = options.timeout ? 3600000 : null;
+    if (typeof options.timeoutAfter === 'boolean') {
+        options.timeoutAfter = options.timeoutAfter ? 3600000 : null;
     }
 
-    if (options.timeout) {
-        options.timeout = parseToInt('timeout', options);
+    if (options.timeoutAfter) {
+        options.timeoutAfter = parseToInt('timeoutAfter', options);
     }
 
     options.data = JSON.stringify(options.data);
@@ -651,8 +675,8 @@ exports._convertPriority = function (options) {
 exports._convertActions = function (options) {
     var actions = [];
 
-    if (!options.actions)
-        return null;
+    if (!options.actions || typeof options.actions === 'string')
+        return options;
 
     for (var i = 0, len = options.actions.length; i < len; i++) {
         var action = options.actions[i];
@@ -875,7 +899,7 @@ exports._exec = function (action, args, callback, scope) {
 
     if (Array.isArray(args)) {
         params = args;
-    } else if (args) {
+    } else if (args !== null) {
         params.push(args);
     }
 
