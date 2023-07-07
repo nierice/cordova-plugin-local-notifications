@@ -454,8 +454,14 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        return PendingIntent.getActivity(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getActivity(
                 context, reqCode, intent, FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            return PendingIntent.getActivity(
+                context, reqCode, intent, FLAG_CANCEL_CURRENT);
+        }
+
 
     }
 
