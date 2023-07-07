@@ -28,6 +28,8 @@ import android.os.Bundle;
 import de.appplant.cordova.plugin.notification.Manager;
 import de.appplant.cordova.plugin.notification.Notification;
 
+import static android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT;
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static de.appplant.cordova.plugin.notification.action.Action.CLICK_ACTION_ID;
 import static de.appplant.cordova.plugin.notification.action.Action.EXTRA_ID;
 
