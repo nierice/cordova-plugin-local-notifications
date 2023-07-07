@@ -375,7 +375,7 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        PendingIntent deleteIntent = PendingIntent.getBroadcastPendingIntent(
+        PendingIntent deleteIntent = PendingIntent.getBroadcast(
                 context, reqCode, intent, FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         builder.setDeleteIntent(deleteIntent);
