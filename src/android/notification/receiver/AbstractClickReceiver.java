@@ -45,6 +45,12 @@ abstract public class AbstractClickReceiver extends NotificationTrampolineActivi
         super();
     }
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        onHandleIntent(getIntent());
+      }
+  
+
     /**
      * Called when local notification was clicked to launch the main intent.
      */
