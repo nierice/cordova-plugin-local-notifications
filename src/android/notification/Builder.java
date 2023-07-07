@@ -28,6 +28,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+
 import android.support.v4.app.NotificationCompat.MessagingStyle.Message;
 import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -45,6 +46,7 @@ import java.util.Random;
 import de.appplant.cordova.plugin.notification.action.Action;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 import static de.appplant.cordova.plugin.notification.Notification.EXTRA_UPDATE;
 
 /**
@@ -454,14 +456,8 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getActivity(
+        return PendingIntent.getActivity(
                 context, reqCode, intent, FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            return PendingIntent.getActivity(
-                context, reqCode, intent, FLAG_CANCEL_CURRENT);
-        }
-
 
     }
 
