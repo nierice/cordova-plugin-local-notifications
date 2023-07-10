@@ -149,6 +149,7 @@
             src="src/android/LocalNotification.java"
             target-dir="src/de/appplant/cordova/plugin/localnotification" />
 
+
         <source-file
             src="src/android/TriggerReceiver.java"
             target-dir="src/de/appplant/cordova/plugin/localnotification" />
@@ -211,6 +212,10 @@
 
         <source-file
             src="src/android/notification/util/AssetUtil.java"
+            target-dir="src/de/appplant/cordova/plugin/notification/util" />
+
+        <source-file
+            src="src/android/notification/util/LaunchUtils.java"
             target-dir="src/de/appplant/cordova/plugin/notification/util" />
 
         <source-file
